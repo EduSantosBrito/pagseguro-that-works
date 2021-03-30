@@ -1,0 +1,32 @@
+{
+    "extends": [
+        "airbnb-typescript/base",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:prettier/recommended",
+        "prettier"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module",
+        "project": "./tsconfig.json"
+    },
+    "rules": {
+        "prettier/prettier": ["error"],
+        "no-underscore-dangle": "off",
+        "strict": ["error", "global"],
+        "class-methods-use-this": "off",
+        "object-curly-newline": ["off"],
+        "global-require": "off",
+        "arrow-parens": ["error", "as-needed"],
+        "no-param-reassign": [
+            "error",
+            {
+                "props": false
+            }
+        ],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "import/prefer-default-export": "off"
+    }
+}
