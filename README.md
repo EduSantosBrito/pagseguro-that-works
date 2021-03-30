@@ -16,10 +16,45 @@
 
 ### 🏠 [Homepage](https://github.com/EduSantosBrito/pagseguro-that-works#readme)
 
+The main problem that I want to resolve with this package is that PagSeguro API packages are confusing and bad documented, so I've created this to include every payment method I need to use.
+
+Feel free to contribute :)
+
+### 🔂 [Recurring Payment Flow](https://dev.pagseguro.uol.com.br/reference/api-recorrencia#recorrencia-introducao)
+
+This feature will make this flow:
+
+<img src="./recurring-payment-flow.png" width="600">
+
+The basic flow is accomplished when these features are englobed:
+
+| Description           | Developed | Tested |
+| --------------------- | --------- | ------ |
+| Plan creation         | No        | No     |
+| Log in to join a plan | No        | No     |
+| Plan adherence        | No        | No     |
+| Billing plan          | No        | No     |
+| Retry payment         | No        | No     |
+
+The fully flow is accomplished when these features are englobed:
+
+| Description               | Developed | Tested |
+| ------------------------- | --------- | ------ |
+| Plan creation             | No        | No     |
+| Log in to join a plan     | No        | No     |
+| Plan adherence            | No        | No     |
+| Billing plan              | No        | No     |
+| Suspend plan              | No        | No     |
+| Reactivate plan           | No        | No     |
+| Edit plan                 | No        | No     |
+| Include coupon to payment | No        | No     |
+| Change payment method     | No        | No     |
+| Retry payment             | No        | No     |
+
 ## Install
 
 ```sh
-yarn install
+yarn add pagseguro-that-works
 ```
 
 ## Run tests
@@ -37,7 +72,7 @@ yarn run test
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/EduSantosBrito/pagseguro-that-works/issues). You can also take a look at the [contributing guide](https://github.com/EduSantosBrito/pagseguro-that-works/blob/master/CONTRIBUTING.md).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/EduSantosBrito/pagseguro-that-works/issues).
 
 ## Show your support
 
