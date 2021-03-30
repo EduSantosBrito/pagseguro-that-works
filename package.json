@@ -1,0 +1,15 @@
+{
+  "name": "pagseguro-that-works",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "etsc",
+    "dev": "nodemon"
+  },
+  "devDependencies": {
+    "esbuild-node-tsc": "1.3.0",
+    "nodemon": "2.0.7",
+    "typescript": "4.2.3"
+  }
+}
