@@ -1,4 +1,4 @@
-import { Charge, DayOfWeek, Expiration, Period, PreApproval, Receiver, ValidatedPreApproval } from '~/types/createPlan';
+import { Charge, DayOfWeek, Expiration, Period, PreApproval, Receiver, ValidatedPreApproval } from '~/types/CreatePlan';
 import { Maybe } from '~/types/Maybe';
 
 const validateEmail = (email: string) => {

@@ -2,10 +2,10 @@ import fetch from 'node-fetch';
 import objectToXml from 'object-to-xml';
 import rundef from 'rundef';
 import { parseStringPromise } from 'xml2js';
-import { CreatePlanRequest, CreatePlanResponse, ValidatedCreatePlanRequest } from '~/types/createPlan';
+import { CreatePlanRequest, CreatePlanResponse, ValidatedCreatePlanRequest } from '~/types/CreatePlan';
 import { Env } from '~/utils/getBaseUrl';
 import getRecurringPaymentBaseUrl from '~/utils/getRecurringPaymentBaseUrl';
-import { validatePreApproval, validateReceiver } from '~/validators/createPlan';
+import { validatePreApproval, validateReceiver } from '~/validators/CreatePlan';
 
 const generateXML = (request: ValidatedCreatePlanRequest) => {
     const xmlHeader = '?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?';
