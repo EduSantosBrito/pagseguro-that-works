@@ -57,12 +57,6 @@ The fully flow is accomplished when these features are englobed:
 yarn add pagseguro-that-works
 ```
 
-## Run tests
-
-```sh
-yarn run test
-```
-
 ## Author
 
 👤 **Eduardo Santos Brito**

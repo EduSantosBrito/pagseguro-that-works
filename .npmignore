@@ -14,3 +14,4 @@ dist/__tests__/**/*
 .eslintignore
 .eslintrc.json
 *.tgz
+declaration.d.js
