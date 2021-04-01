@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es6",
         "module": "commonjs",
         "lib": ["esnext"],
         "outDir": "dist",
@@ -10,11 +10,16 @@
         "noImplicitAny": true,
         "moduleResolution": "node",
         "baseUrl": "./",
-        "paths": {},
+        "paths": {
+            "~/types/*": ["src/types/*"],
+            "~/functions/*": ["src/functions/*"],
+            "~/utils/*": ["src/utils/*"],
+            "~/validators/*": ["src/validators/*"]
+        },
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
-    "include": ["**/*.ts"],
-    "exclude": ["node_modules", "src/**/*.spec.ts"]
+    "include": ["**/*.ts", "src/**/*.test.ts"],
+    "exclude": ["node_modules", "src/**/*.d.ts"]
 }

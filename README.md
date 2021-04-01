@@ -30,7 +30,7 @@ The basic flow is accomplished when these features are englobed:
 
 | Description           | Developed | Tested |
 | --------------------- | --------- | ------ |
-| Plan creation         | No        | No     |
+| Plan creation         | Yes       | No     |
 | Log in to join a plan | No        | No     |
 | Plan adherence        | No        | No     |
 | Billing plan          | No        | No     |
