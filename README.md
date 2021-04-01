@@ -32,7 +32,7 @@ The basic flow is accomplished when these features are englobed:
 | --------------------- | --------- | ------ |
 | Plan creation         | Yes       | No     |
 | Log in to join a plan | Yes       | No     |
-| Plan adherence        | No        | No     |
+| Plan adherence        | Yes       | No     |
 | Billing plan          | No        | No     |
 | Retry payment         | No        | No     |
 
