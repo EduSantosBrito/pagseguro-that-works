@@ -26,7 +26,7 @@ const createPlan = async (email: string, token: string, env: Env, request: Creat
     };
     const BASE_URL = getRecurringPaymentBaseUrl(env);
     const generatedXML = generateXML(rundef(validatedRequest, false, true));
-    const response = await fetch(`${BASE_URL}/pre-approvals/request/?email=${email}&token=${token}`, {
+    const response = await fetch(`${BASE_URL}/pre-approvals/request?email=${email}&token=${token}`, {
         method: 'POST',
         headers: {
             Accept: 'application/vnd.pagseguro.com.br.v3+xml;charset=ISO-8859-1',
@@ -34,7 +34,8 @@ const createPlan = async (email: string, token: string, env: Env, request: Creat
         },
         body: generatedXML,
     });
-    return parseStringPromise(await response.text()) as Promise<CreatePlanResponse>;
+    const data = await response.text();
+    return parseStringPromise(data) as Promise<CreatePlanResponse>;
 };
 
 export default createPlan;
