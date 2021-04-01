@@ -40,9 +40,9 @@ The fully flow is accomplished when these features are englobed:
 
 | Description               | Developed | Tested |
 | ------------------------- | --------- | ------ |
-| Plan creation             | No        | No     |
-| Log in to join a plan     | No        | No     |
-| Plan adherence            | No        | No     |
+| Plan creation             | Yes       | No     |
+| Log in to join a plan     | Yes       | No     |
+| Plan adherence            | Yes       | No     |
 | Billing plan              | No        | No     |
 | Suspend plan              | No        | No     |
 | Reactivate plan           | No        | No     |
