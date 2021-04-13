@@ -8,6 +8,52 @@ import { Maybe } from '~/types/Maybe';
 
 let email: Maybe<string>;
 let token: Maybe<string>;
+let planId: Maybe<string>;
+let sessionId: Maybe<string>;
+
+type PagseguroWindow = Window &
+    typeof globalThis & {
+        PagSeguroDirectPayment: {
+            setSessionId: (sessionId: string) => void;
+            onSenderHashReady: (callback: (response: { senderHash: string; status: string }) => void) => void;
+            createCardToken: (config: {
+                cardNumber: string;
+                brand: string;
+                cvv: string;
+                expirationMonth: string;
+                expirationYear: string;
+                success: (response: { card: { token: string } }) => void;
+            }) => string;
+        };
+    };
+
+const evaluatePage = async ([id]: string[]) => {
+    return new Promise<{ senderHash: string; cardToken: string }>(resolve => {
+        const { PagSeguroDirectPayment } = window as PagseguroWindow;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        PagSeguroDirectPayment?.setSessionId(id);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        PagSeguroDirectPayment?.createCardToken({
+            cardNumber: '4111111111111111', // Número do cartão de crédito
+            brand: 'visa', // Bandeira do cartão
+            cvv: '013', // CVV do cartão
+            expirationMonth: '12', // Mês da expiração do cartão
+            expirationYear: '2026', // Ano da expiração do cartão, é necessário os 4 dígitos.
+            success: responseSuccess => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                PagSeguroDirectPayment?.onSenderHashReady(({ senderHash }) => {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                    resolve({ senderHash, cardToken: responseSuccess.card.token });
+                });
+            },
+        });
+    });
+};
+
+const generatePlanData = async () => {
+    await page.goto('http://localhost:3000', { waitUntil: 'domcontentloaded' });
+    return page.evaluate(evaluatePage, sessionId as string);
+};
 
 beforeAll(() => {
     config();
@@ -33,20 +79,23 @@ describe('Recurring Payment', () => {
             maxUses: 500,
         };
         const createPlanResponse = await createPlan(email as string, token as string, 'development', request);
-        expect(createPlanResponse.preApprovalRequest.code).not.toBe(null || undefined);
+        [planId] = createPlanResponse.preApprovalRequest.code;
+        expect(planId).not.toBe(null || undefined);
     });
     it('Can get session', async () => {
         const sessionResponse = await getSession(email as string, token as string, 'development');
-        expect(sessionResponse.session.id).not.toBe(null || undefined);
+        sessionId = sessionResponse.session.id;
+        expect(sessionId).not.toBe(null || undefined);
     });
     it('Can adhere to a plan', async () => {
+        const planData = await generatePlanData();
         const request: AdherePlanRequest = {
-            plan: '<<PLAN_ID>>',
+            plan: planId as string,
             reference: new Date().toISOString(),
             paymentMethod: {
                 type: 'CREDITCARD',
                 creditCard: {
-                    token: '<<CARD_TOKEN>>',
+                    token: planData.cardToken,
                     holder: {
                         name: 'Nome Comprador',
                         birthDate: '11/01/1984',
@@ -76,7 +125,7 @@ describe('Recurring Payment', () => {
             sender: {
                 email: 'test@sandbox.pagseguro.com.br',
                 name: 'Sender Name',
-                hash: '<<SENDER_HASH>>',
+                hash: planData.senderHash,
                 address: {
                     street: 'Av. Brigadeira Faria Lima',
                     number: '1384',
@@ -100,7 +149,6 @@ describe('Recurring Payment', () => {
             },
         };
         const adherePlanResponse = await adherePlan(email as string, token as string, 'development', request);
-        console.info('THIS TEST IS ALWAYS SUCCESS, CHANGE REQUEST DATA', { adherePlanResponse });
-        expect(true).toBe(true);
-    });
+        expect(adherePlanResponse.code).not.toBe(null || undefined);
+    }, 60000);
 });

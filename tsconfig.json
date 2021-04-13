@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "ES2017",
         "module": "commonjs",
-        "lib": ["esnext"],
+        "lib": ["esnext", "dom"],
         "outDir": "dist",
         "rootDir": "src",
         "removeComments": true,
@@ -18,7 +18,8 @@
         },
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "types": ["puppeteer", "jest-environment-puppeteer", "expect-puppeteer"]
     },
     "include": ["**/*.ts", "src/**/*.test.ts"],
     "exclude": ["node_modules"]

@@ -1,6 +1,7 @@
+
 module.exports = {
-    preset: 'ts-jest',
-    testEnvironment: 'node',
+    preset: './jest-preset.js',
+    // testEnvironment: 'node',
     moduleNameMapper: {
         '~/types/(.*)': ['<rootDir>/src/types/$1'],
         '~/utils/(.*)': ['<rootDir>/src/utils/$1'],

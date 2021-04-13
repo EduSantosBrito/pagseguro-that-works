@@ -189,7 +189,7 @@ const validateAmountPerPayment = (amountPerPayment: Maybe<number>, charge: Charg
     return amountPerPayment;
 };
 
-const formatDecimal = (numberToFormat: Maybe<number>): Maybe<string> => (numberToFormat ? numberToFormat.toFixed(2) : undefined);
+export const formatDecimal = (numberToFormat: Maybe<number>): Maybe<string> => (numberToFormat ? numberToFormat.toFixed(2) : undefined);
 
 export const validatePreApproval = (preApproval: PreApproval): ValidatedPreApproval => {
     return {
