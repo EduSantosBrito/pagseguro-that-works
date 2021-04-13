@@ -30,20 +30,20 @@ The basic flow is accomplished when these features are englobed:
 
 | Description           | Developed | Tested |
 | --------------------- | --------- | ------ |
-| Plan creation         | Yes       | No     |
-| Log in to join a plan | Yes       | No     |
-| Plan adherence        | Yes       | No     |
-| Billing plan          | No        | No     |
+| Plan creation         | Yes       | Yes    |
+| Log in to join a plan | Yes       | Yes    |
+| Plan adherence        | Yes       | Yes    |
+| Billing plan          | Yes       | Yes    |
 | Retry payment         | No        | No     |
 
 The fully flow is accomplished when these features are englobed:
 
 | Description               | Developed | Tested |
 | ------------------------- | --------- | ------ |
-| Plan creation             | Yes       | No     |
-| Log in to join a plan     | Yes       | No     |
-| Plan adherence            | Yes       | No     |
-| Billing plan              | No        | No     |
+| Plan creation             | Yes       | Yes    |
+| Log in to join a plan     | Yes       | Yes    |
+| Plan adherence            | Yes       | Yes    |
+| Billing plan              | Yes       | Yes    |
 | Suspend plan              | No        | No     |
 | Reactivate plan           | No        | No     |
 | Edit plan                 | No        | No     |
@@ -55,6 +55,14 @@ The fully flow is accomplished when these features are englobed:
 
 ```sh
 yarn add pagseguro-that-works
+```
+
+## Test
+
+> PS: You need to create a project running with PagSeguroDirectPayment at port 3000. If you want to clone something already developed, clone this repo: [pagseguro-hash-generator](https://github.com/EduSantosBrito/pagseguro-hash-generator)
+
+```sh
+yarn test
 ```
 
 ## Author
