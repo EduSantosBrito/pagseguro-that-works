@@ -1,8 +1,8 @@
 module.exports = {
     launch: {
-        dumpio: true,
-        headless: true,
-        args: ['--disable-gpu'],
+        headless: false,
+        slowMo: 25,
+        defaultViewport: null,
     },
     browser: 'chromium',
 };

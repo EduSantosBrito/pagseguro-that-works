@@ -75,7 +75,7 @@ const validateEmail = (email: string) => {
     return email;
 };
 
-const validateIp = (ip: Maybe<string>, hash: Maybe<string>): Maybe<string> => {
+export const validateIp = (ip: Maybe<string>, hash: Maybe<string>): Maybe<string> => {
     if (!ip && !hash) {
         throw new Error('Invalid ip! This is required when hash is unset');
     }

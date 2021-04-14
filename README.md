@@ -1,6 +1,6 @@
 <h1 align="center">Welcome to pagseguro-that-works 👋</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.6.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/EduSantosBrito/pagseguro-that-works#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
@@ -34,7 +34,7 @@ The basic flow is accomplished when these features are englobed:
 | Log in to join a plan | Yes       | Yes    |
 | Plan adherence        | Yes       | Yes    |
 | Billing plan          | Yes       | Yes    |
-| Retry payment         | No        | No     |
+| Retry payment         | Yes       | Yes    |
 
 The fully flow is accomplished when these features are englobed:
 
@@ -49,7 +49,7 @@ The fully flow is accomplished when these features are englobed:
 | Edit plan                 | No        | No     |
 | Include coupon to payment | No        | No     |
 | Change payment method     | No        | No     |
-| Retry payment             | No        | No     |
+| Retry payment             | Yes       | Yes    |
 
 ## Install
 
@@ -60,6 +60,8 @@ yarn add pagseguro-that-works
 ## Test
 
 > PS: You need to create a project running with PagSeguroDirectPayment at port 3000. If you want to clone something already developed, clone this repo: [pagseguro-hash-generator](https://github.com/EduSantosBrito/pagseguro-hash-generator)
+
+> PS2: Create a .env based on .env.example
 
 ```sh
 yarn test
