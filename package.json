@@ -1,6 +1,6 @@
 {
     "name": "pagseguro-that-works",
-    "version": "0.5.0",
+    "version": "0.6.0",
     "description": "Pagseguro API wrapper that actually works!",
     "author": "Eduardo Santos Brito",
     "main": "./dist/index.js",
