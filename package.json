@@ -12,7 +12,7 @@
     "bugs": {
         "url": "https://github.com/EduSantosBrito/pagseguro-that-works/issues"
     },
-    "types": "./dist/types/index.d.ts",
+    "types": "./dist/index.d.ts",
     "license": "MIT",
     "husky": {
         "hooks": {
