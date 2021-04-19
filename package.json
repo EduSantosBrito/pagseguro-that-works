@@ -12,6 +12,7 @@
     "bugs": {
         "url": "https://github.com/EduSantosBrito/pagseguro-that-works/issues"
     },
+    "types": "./dist/types/index.d.ts",
     "license": "MIT",
     "husky": {
         "hooks": {
@@ -26,7 +27,7 @@
         ]
     },
     "scripts": {
-        "build": "etsc --target=es2017",
+        "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
         "dev": "nodemon",
         "lint": "eslint --ext ts ./",
         "test": "jest --verbose --runInBand",
@@ -49,7 +50,6 @@
         "@typescript-eslint/eslint-plugin": "4.20.0",
         "@typescript-eslint/parser": "4.20.0",
         "dotenv": "8.2.0",
-        "esbuild-node-tsc": "1.3.0",
         "eslint": "7.23.0",
         "eslint-config-airbnb-base": "14.2.1",
         "eslint-config-airbnb-typescript": "12.3.1",
@@ -68,7 +68,8 @@
         "puppeteer": "8.0.0",
         "rundef": "1.2.6",
         "ts-jest": "26.5.4",
-        "typescript": "4.2.3",
+        "tsc-alias": "1.2.9",
+        "typescript": "4.2.4",
         "xml2js": "0.4.23"
     },
     "peerDependencies": {

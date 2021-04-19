@@ -19,8 +19,9 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "types": ["puppeteer", "jest-environment-puppeteer", "expect-puppeteer"]
+        "types": ["puppeteer", "jest-environment-puppeteer", "expect-puppeteer"],
+        "declaration": true
     },
     "include": ["**/*.ts", "src/**/*.test.ts"],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "dist"]
 }
