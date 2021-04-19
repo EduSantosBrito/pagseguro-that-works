@@ -26,10 +26,11 @@
         ]
     },
     "scripts": {
-        "build": "etsc",
+        "build": "etsc --target=es2017",
         "dev": "nodemon",
         "lint": "eslint --ext ts ./",
-        "test": "jest --verbose --runInBand"
+        "test": "jest --verbose --runInBand",
+        "prepublishOnly": "npm run build"
     },
     "devDependencies": {
         "@commitlint/cli": "12.0.1",

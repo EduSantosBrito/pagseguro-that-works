@@ -11,7 +11,10 @@ tsconfig.json
 yarn.lock
 node_modules
 dist/__tests__/**/*
+dist/types/**/*
 .eslintignore
 .eslintrc.json
 *.tgz
 declaration.d.js
+jest-preset.js
+jest-puppeteer.config.js
