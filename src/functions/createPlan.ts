@@ -36,7 +36,11 @@ const createPlan = async (email: string, token: string, env: Env, request: Creat
     });
     const data = await response.text();
     const cleanedString = data.replace('\ufeff', '');
-    return parseStringPromise(cleanedString) as Promise<CreatePlanResponse>;
+    try {
+        return (await parseStringPromise(cleanedString)) as CreatePlanResponse;
+    } catch {
+        throw new Error(`Something happened with the XML: ${data}. Tried to clean to ${cleanedString}`);
+    }
 };
 
 export default createPlan;
