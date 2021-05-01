@@ -35,7 +35,8 @@ const createPlan = async (email: string, token: string, env: Env, request: Creat
         body: generatedXML,
     });
     const data = await response.text();
-    return parseStringPromise(data) as Promise<CreatePlanResponse>;
+    const cleanedString = data.replace('\ufeff', '');
+    return parseStringPromise(cleanedString) as Promise<CreatePlanResponse>;
 };
 
 export default createPlan;

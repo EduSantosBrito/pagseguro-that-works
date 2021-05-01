@@ -13,7 +13,8 @@ const getSession = async (email: string, token: string, env: Env): Promise<GetSe
     const BASE_URL = getRecurringPaymentBaseUrl(env);
     const response = await fetch(`${BASE_URL}/sessions?email=${email}&token=${token}`, { method: 'POST' });
     const data = await response.text();
-    return parseStringPromise(data) as Promise<GetSessionResponse>;
+    const cleanedString = data.replace('\ufeff', '');
+    return parseStringPromise(cleanedString) as Promise<GetSessionResponse>;
 };
 
 export default getSession;
