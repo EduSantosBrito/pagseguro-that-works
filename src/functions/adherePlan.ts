@@ -17,7 +17,7 @@ const adherePlan = async (email: string, token: string, env: Env, request: Adher
         body: JSON.stringify(validatedRequest),
         headers: {
             'Content-Type': 'application/json',
-            Accept: 'application/vnd.pagseguro.com.br.v1+json;charset=ISO-8859-1',
+            Accept: 'application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1',
         },
     });
     return response.json() as Promise<AdherePlanResponse>;

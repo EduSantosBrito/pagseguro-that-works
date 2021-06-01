@@ -46,7 +46,7 @@ export type Receiver = {
 
 export type CreatePlanRequest = {
     redirectURL?: string;
-    reference: string;
+    reference?: string;
     preApproval: PreApproval;
     reviewURL?: string;
     maxUses?: number;

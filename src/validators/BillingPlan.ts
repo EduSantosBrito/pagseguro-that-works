@@ -9,7 +9,7 @@ export const validateItems = (items: Maybe<Item[]>): Maybe<Item[]> => {
     return items.map(item => ({
         ...item,
         amount: formatDecimal(Number(item.amount)) as string,
-        shippingCost: formatDecimal(Number(item.shippingCost)),
-        weight: formatDecimal(Number(item.weight)),
+        ...(item.shippingCost ? { shippingCost: formatDecimal(Number(item.shippingCost)) } : {}),
+        ...(item.weight ? { weight: formatDecimal(Number(item.weight)) } : {}),
     }));
 };

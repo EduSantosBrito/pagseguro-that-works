@@ -2,11 +2,13 @@ import { config } from 'dotenv';
 import fetch, { Response } from 'node-fetch';
 import { Page } from 'puppeteer';
 import adherePlan from '~/functions/adherePlan';
+import billingPlan from '~/functions/billingPlan';
 import createPlan from '~/functions/createPlan';
 import getSession from '~/functions/getSession';
 import retryPayment from '~/functions/retryPayment';
 import { AdherePlanRequest } from '~/types/AdherePlan';
-import { CreatePlanRequest } from '~/types/CreatePlan';
+import { BillingPlanRequest } from '~/types/BillingPlan';
+import { Charge, CreatePlanRequest } from '~/types/CreatePlan';
 import { Maybe } from '~/types/Maybe';
 import { RetryPaymentRequest } from '~/types/RetryPayment';
 
@@ -15,6 +17,87 @@ let token: Maybe<string>;
 let planId: Maybe<string>;
 let sessionId: Maybe<string>;
 let preApprovalCode: Maybe<string>;
+
+const cardParams = {
+    cardNumber: '4111111111111111', // Número do cartão de crédito
+    brand: 'visa', // Bandeira do cartão
+    cvv: '013', // CVV do cartão
+    expirationMonth: '12', // Mês da expiração do cartão
+    expirationYear: '2026', // Ano da expiração do cartão, é necessário os 4 dígitos.
+};
+
+const getCreatePlanRequest = (finalDate: Date, charge: Charge): CreatePlanRequest => ({
+    reference: finalDate.toISOString(),
+    preApproval: {
+        name: finalDate.toISOString(),
+        charge,
+        period: 'MONTHLY',
+        amountPerPayment: 200.0,
+        trialPeriodDuration: 28,
+        finalDate,
+    },
+    maxUses: 500,
+});
+
+const getAdherePlanRequest = (plan: string, cardToken: string): AdherePlanRequest => ({
+    plan,
+    reference: new Date().toISOString(),
+    paymentMethod: {
+        type: 'CREDITCARD',
+        creditCard: {
+            token: cardToken,
+            holder: {
+                name: 'Nome Comprador',
+                birthDate: '11/01/1984',
+                documents: [
+                    {
+                        type: 'CPF',
+                        value: '00000000191',
+                    },
+                ],
+                billingAddress: {
+                    street: 'Av. Brigadeiro Faria Lima',
+                    number: '1384',
+                    complement: '3 andar',
+                    district: 'Jd. Paulistano',
+                    city: 'São Paulo',
+                    state: 'SP',
+                    country: 'BRA',
+                    postalCode: '01452002',
+                },
+                phone: {
+                    areaCode: '11',
+                    number: '988881234',
+                },
+            },
+        },
+    },
+    sender: {
+        email: 'test@sandbox.pagseguro.com.br',
+        name: 'Sender Name',
+        ip: '192.168.0.1',
+        address: {
+            street: 'Av. Brigadeira Faria Lima',
+            number: '1384',
+            complement: '3 andar',
+            district: 'Jd. Paulistano',
+            city: 'São Paulo',
+            state: 'SP',
+            country: 'BRA',
+            postalCode: '01452002',
+        },
+        documents: [
+            {
+                type: 'CPF',
+                value: '00000000191',
+            },
+        ],
+        phone: {
+            areaCode: '11',
+            number: '988881234',
+        },
+    },
+});
 
 type PagseguroWindow = Window &
     typeof globalThis & {
@@ -116,7 +199,7 @@ const handleCaptcha = async (sitekey: string, url: string) => {
     return results.find(result => !!result) as string;
 };
 
-const alterPaymentOrderStatus = async (pagseguroPage: Page, paymentOrderCode: string, orderPageUrl: string) => {
+const alterPaymentOrderStatus = async (pagseguroPage: Page, orderPageUrl: string) => {
     await pagseguroPage.goto(`https://sandbox.pagseguro.uol.com.br${orderPageUrl}`);
     await pagseguroPage.waitForSelector('#preapprovalpayment-transaction-list > tbody > tr');
     await pagseguroPage.click('#preapprovalpayment-transaction-list > tbody > tr');
@@ -159,7 +242,7 @@ const getPaymentOrderCode = async (subscriptionCode: string) => {
     return Object.values(paymentOrders).find(paymentOrder => paymentOrder.status === 2) as Record<string, unknown>;
 };
 
-const alterPaymentStatus = async (subscriptionCode: string) => {
+const alterPaymentStatus = async (subscriptionCode: string, cancelPayment?: boolean) => {
     const pagseguroPage = await browser.newPage();
     await pagseguroPage.goto(`https://sandbox.pagseguro.uol.com.br/assinaturas/detalhes.html?code=${subscriptionCode}`);
     await pagseguroPage.type('input[type=email]', process.env.PAGSEGURO_EMAIL as string);
@@ -184,7 +267,9 @@ const alterPaymentStatus = async (subscriptionCode: string) => {
     const orderPageUrl = await pagseguroPage.$eval('#preapproval-history-list > tbody > tr:nth-child(2)', el =>
         el.getAttribute('data-content-url'),
     );
-    await alterPaymentOrderStatus(pagseguroPage, paymentOrderCode, orderPageUrl as string);
+    if (cancelPayment) {
+        await alterPaymentOrderStatus(pagseguroPage, orderPageUrl as string);
+    }
     return paymentOrderCode;
 };
 
@@ -198,19 +283,7 @@ describe('Recurring Payment', () => {
     it('Can create a plan', async () => {
         const finalDate = new Date();
         finalDate.setMonth(finalDate.getMonth() + 1);
-        const request: CreatePlanRequest = {
-            reference: finalDate.toISOString(),
-            preApproval: {
-                name: finalDate.toISOString(),
-                charge: 'AUTO',
-                period: 'MONTHLY',
-                amountPerPayment: 200.0,
-                membershipFee: 15000.0,
-                trialPeriodDuration: 28,
-                finalDate,
-            },
-            maxUses: 500,
-        };
+        const request: CreatePlanRequest = getCreatePlanRequest(finalDate, 'MANUAL');
         const createPlanResponse = await createPlan(email as string, token as string, 'development', request);
         [planId] = createPlanResponse.preApprovalRequest.code;
         expect(planId).not.toBe(null || undefined);
@@ -222,72 +295,31 @@ describe('Recurring Payment', () => {
     });
     it('Can adhere to a plan', async () => {
         const planData = await generatePlanData();
-        const request: AdherePlanRequest = {
-            plan: planId as string,
-            reference: new Date().toISOString(),
-            paymentMethod: {
-                type: 'CREDITCARD',
-                creditCard: {
-                    token: planData.cardToken,
-                    holder: {
-                        name: 'Nome Comprador',
-                        birthDate: '11/01/1984',
-                        documents: [
-                            {
-                                type: 'CPF',
-                                value: '00000000191',
-                            },
-                        ],
-                        billingAddress: {
-                            street: 'Av. Brigadeiro Faria Lima',
-                            number: '1384',
-                            complement: '3 andar',
-                            district: 'Jd. Paulistano',
-                            city: 'São Paulo',
-                            state: 'SP',
-                            country: 'BRA',
-                            postalCode: '01452002',
-                        },
-                        phone: {
-                            areaCode: '11',
-                            number: '988881234',
-                        },
-                    },
-                },
-            },
-            sender: {
-                email: 'test@sandbox.pagseguro.com.br',
-                name: 'Sender Name',
-                hash: planData.senderHash,
-                address: {
-                    street: 'Av. Brigadeira Faria Lima',
-                    number: '1384',
-                    complement: '3 andar',
-                    district: 'Jd. Paulistano',
-                    city: 'São Paulo',
-                    state: 'SP',
-                    country: 'BRA',
-                    postalCode: '01452002',
-                },
-                documents: [
-                    {
-                        type: 'CPF',
-                        value: '00000000191',
-                    },
-                ],
-                phone: {
-                    areaCode: '11',
-                    number: '988881234',
-                },
-            },
-        };
+        const request = getAdherePlanRequest(planId as string, planData.cardToken);
         const adherePlanResponse = await adherePlan(email as string, token as string, 'development', request);
         preApprovalCode = adherePlanResponse.code;
         expect(preApprovalCode).not.toBe(null || undefined);
     }, 60000);
+    it('Can bill plan', async () => {
+        const request: BillingPlanRequest = {
+            preApprovalCode: preApprovalCode as string,
+            items: [{ id: '0001', description: 'teste1', amount: '200.00', quantity: '1' }],
+        };
+
+        const billingPlanResponse = await billingPlan(email as string, token as string, 'development', request);
+        expect(billingPlanResponse.transactionCode).not.toBe(null || undefined);
+    }, 60000);
     it('Can retry payment', async () => {
-        const paymentOrderCode = await alterPaymentStatus(preApprovalCode as string);
+        const finalDate = new Date();
+        finalDate.setMonth(finalDate.getMonth() + 1);
+        const requestCreatePlan: CreatePlanRequest = getCreatePlanRequest(finalDate, 'AUTO');
+        const createPlanResponse = await createPlan(email as string, token as string, 'development', requestCreatePlan);
+        [planId] = createPlanResponse.preApprovalRequest.code;
         const planData = await generatePlanData();
+        const requestAdherePlan = getAdherePlanRequest(planId, planData.cardToken);
+        const adherePlanResponse = await adherePlan(email as string, token as string, 'development', requestAdherePlan);
+        preApprovalCode = adherePlanResponse.code;
+        const paymentOrderCode = await alterPaymentStatus(preApprovalCode, true);
         const request: RetryPaymentRequest = {
             type: 'CREDITCARD',
             sender: {
@@ -326,7 +358,7 @@ describe('Recurring Payment', () => {
             token as string,
             'development',
             request,
-            preApprovalCode as string,
+            preApprovalCode,
             paymentOrderCode,
         );
 
